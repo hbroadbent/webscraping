@@ -6,6 +6,25 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random, logging
+
+class UserAgentRotationMiddleware(UserAgentMiddleware):
+    user_agents_list = 
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ( KHTML, like Gecko) Chrome/44.0.2403.157 Safari/53 7.36'
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) Appl eWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.27 43.116 Safari/537.36'
+        
+
+    def __init__(self, user_agent=''):
+        self.user_agent = user_agent
+
+    def process_request(self, request, spider):
+        try:
+            self.user_agent = random.choice(self.user_agent_list)
+            request.headers.setdefault('User-Agent', self.user_agent)
+        except IndexError:
+            logging.error("Couldnt fetch the user agent")
 
 
 class GlassesSpiderMiddleware(object):
